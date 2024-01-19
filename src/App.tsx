@@ -1,25 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
+
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
+import Signup from './Pages/Signup/Signup';
+import Home from './Pages/Home/Home';
+import Create from './Pages/Create/Create';
+import Room from './Pages/Room/Room';
+import Join from './Pages/Join/Join';
+import {UserProtectedRouter,UserProtectedRouterAuthentication} from './Services/protectedRoute';
+import Login from './Pages/Login/Login';
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <Router>
+      <Routes>
+    
+       <Route path='/signup' element={ <UserProtectedRouterAuthentication><Signup /></UserProtectedRouterAuthentication>} />
+       <Route path='/login' element={ <UserProtectedRouterAuthentication><Login /></UserProtectedRouterAuthentication>} />
+      <Route path='/' element={  <UserProtectedRouter><Home /></UserProtectedRouter>} />
+       <Route path='/create' element={ <UserProtectedRouter><Create /></UserProtectedRouter>} />
+        <Route path='/video/:roomId/:username' element={<Room />} />
+        <Route path='/join' element={<Join />} />
+      </Routes>
+    </Router>
+    </>
   );
 }
 
