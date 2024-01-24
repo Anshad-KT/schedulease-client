@@ -8,27 +8,30 @@ import {
 import { MdOutlineScreenShare } from "react-icons/md";
 import { SocketContext } from "../../Context/SocketContext";
 import { useSelector } from "react-redux";
+import AnimatedPopup from "./JoinRequest";
 
 const VideoCall = ({streamKeys}:any) => {
   
   const [muteMic, setMuteMic] = useState(false);
   const [muteCamera, setMuteCamera] = useState(false);
-  const [shareScreen, setShareScreen] = useState(false);
+  const [shareScreen, setShareScreen] = useState(true);
   const { 
     remoteStream,
     myVideo,
     selected,
+    toggleCamera,
+    toggleMic,
+    endCall,
+    newUser,
     setSelected } = useContext(SocketContext)
 
   
   const videoRef = useRef<any>(null);
 
  useEffect(()=>{
-  console.log('streamKey in VideoCall:', streamKeys);
+
   videoRef.current.srcObject =  remoteStream.current[streamKeys]
-  console.log(remoteStream.current[streamKeys],streamKeys);
-  
-  console.log(videoRef.current);
+ 
   
  },[ remoteStream, streamKeys])
 
@@ -43,7 +46,7 @@ const VideoCall = ({streamKeys}:any) => {
             autoPlay
           />
           <div className="bg-primary bg-opacity-70 flex w-fit h-fit rounded-full py-1 px-2 text-[11px] text-white absolute bottom-3 left-3 ">
-            {"Muhd Hanish"}
+            {streamKeys}
           </div>
           <div className=" w-[270px] h-[170px] rounded-md overflow-hidden border absolute bottom-3 right-3 text-white ">
             <div className="max-w-full max-h-full rounded-md">
@@ -71,9 +74,14 @@ const VideoCall = ({streamKeys}:any) => {
           <div className="flex w-full h-full justify-center items-center gap-x-5">
             <button
               className={`flex items-center p-2.5  ${
-                !muteMic ? "bg-primary" : "bg-danger_color"
+                !muteMic ? "bg-primary" : "bg-red-500"
               } rounded-full`}
-              onClick={() => setMuteMic(!muteMic)}
+              onClick={() => {
+                setMuteMic(prevMuteMic => !prevMuteMic);
+                
+                
+                toggleMic();
+              }}
             >
               {!muteMic ? (
                 <BiMicrophone fontSize={"21"} />
@@ -83,9 +91,12 @@ const VideoCall = ({streamKeys}:any) => {
             </button>
             <button
               className={`flex items-center p-2.5  ${
-                !muteCamera ? "bg-primary" : "bg-danger_color"
+                !muteCamera ? "bg-primary" : "bg-red-500"
               } rounded-full`}
-              onClick={() => setMuteCamera(!muteCamera)}
+              onClick={() => { 
+                setMuteCamera(!muteCamera)
+                toggleCamera()
+              }}
             >
               {!muteCamera ? (
                 <BiVideo fontSize={"21"} />
@@ -103,11 +114,18 @@ const VideoCall = ({streamKeys}:any) => {
             </button>
           </div>
           <div className="flex flex-shrink-0  h-full justify-center items-center">
-            <button className="bg-danger_color  bg-red-500 text-white px-4 py-3 text-[12px] rounded-full">
+            <button onClick={endCall} className="bg-danger_color  bg-red-500 text-white px-4 py-3 text-[12px] rounded-full">
               End Call
             </button>
           </div>
         </div>
+        {newUser?.map((item:string)=>{
+          return(
+<AnimatedPopup userOne={item} />
+          )
+        })}
+        
+        
       </div>
     </div>
   );

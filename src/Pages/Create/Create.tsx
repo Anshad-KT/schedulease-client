@@ -4,6 +4,7 @@ import ContentComponent from '../../Components/Create/Content/ContentComponent'
 const Create = () => {
   return (
    <>
+   
    <ContentComponent />
    </>
   )

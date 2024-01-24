@@ -1,33 +1,35 @@
 import { add } from "date-fns";
 import React, { createContext, useMemo, useContext, useRef, useState, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 interface SocketProviderProps {
-    children: React.ReactNode;
-  }
+  children: React.ReactNode;
+}
 
 
 
 //const ENDPOINT = process.env.REACT_APP_BASE_URL as string
- const ENDPOINT='http://scheduleease.com'
+const ENDPOINT = 'http://scheduleease.com'
 
 export const SocketContext = createContext<any>(null);
 
 export const useSocket = () => {
   const socket = io(ENDPOINT)
-  console.log(socket);
-  console.log("socket");
-  
+
+
   return socket;
 };
 
-export const SocketProvider = (props:SocketProviderProps) => {
+export const SocketProvider = (props: SocketProviderProps) => {
+  const [newUser, setNewUser] = useState<any>([])
   const socket = useMemo(() => io(ENDPOINT), []);
-  console.log("hissl",socket);
- 
+  const navigate = useNavigate()
+  console.log("hissl", socket);
+  const [displayChat, setDisplayChat] = useState<any>([]);
+
   const [streams, setStreams] = useState<any>([])
   const [selected, setSelected] = useState<any>([])
-   const myVideo = useRef<HTMLVideoElement | null>(null);
+  const myVideo = useRef<HTMLVideoElement | null>(null);
   const userVideoSrc = useRef<HTMLVideoElement | null>(null);
   const userVideoSrc2 = useRef<HTMLVideoElement | null>(null);
   const localStream = useRef<MediaStream | null>(null);
@@ -38,7 +40,7 @@ export const SocketProvider = (props:SocketProviderProps) => {
   const [callEnd, setCallEnd] = useState(false);
   const roomIds = useParams()
   console.log(roomIds);
-  
+
   const roomId = roomIds.roomId as string
   const value = roomIds.username
   const Servers = useMemo(() => {
@@ -50,7 +52,7 @@ export const SocketProvider = (props:SocketProviderProps) => {
       ],
     };
   }, []);
-  
+
 
   ////////////////////////////////////////////////////CREATE PEER CONNECTION//////////////////////////////////////////
 
@@ -87,7 +89,7 @@ export const SocketProvider = (props:SocketProviderProps) => {
         }
       });
     }
-    console.log("pasas");
+    ;
 
     if (peerConnection.current[user_id]) {
       peerConnection.current[user_id].ontrack = async (event: any) => {
@@ -96,7 +98,7 @@ export const SocketProvider = (props:SocketProviderProps) => {
             await remoteStream.current![user_id].addTrack(track, remoteStream.current[user_id]);
 
           });
-     
+
 
           setStreams((prev: any) => ({
             ...prev,
@@ -107,7 +109,7 @@ export const SocketProvider = (props:SocketProviderProps) => {
           //   userVideoSrc.current.srcObject = remoteStream.current;
           // }
           ///////////check here//////////
-          console.log("events");
+
 
         }
       };
@@ -128,10 +130,10 @@ export const SocketProvider = (props:SocketProviderProps) => {
       };
     }
   }, [Servers, roomId, socket, value]);
- 
+
 
   ////////////////////////////////////////////////////CREATE OFFER//////////////////////////////////////////
- 
+
   const createOffer = useCallback(async (user_id: string) => {
     if (!peerConnection.current[user_id]) {
       await createPeerConnection(user_id);
@@ -148,7 +150,7 @@ export const SocketProvider = (props:SocketProviderProps) => {
     }
   }, [createPeerConnection, roomId, socket, value]);
 
-  
+
   ////////////////////////////////////////////////////HANDLE USER JOINED//////////////////////////////////////////
 
   const handleUserJoined = useCallback(async (user_id: string) => {
@@ -158,7 +160,7 @@ export const SocketProvider = (props:SocketProviderProps) => {
 
 
   ////////////////////////////////////////////////////GET VIDEO STREAM//////////////////////////////////////////
-  
+
 
   useEffect(() => {
     const userVideo = async () => {
@@ -172,13 +174,13 @@ export const SocketProvider = (props:SocketProviderProps) => {
           myVideo.current.srcObject = localStream.current;
         }
 
-        console.log(localStream.current);
 
 
 
 
 
-console.log("whyyy",value);
+
+
 
 
         await socket?.emit("join-video-chat", { roomId, user_id: value });
@@ -196,7 +198,7 @@ console.log("whyyy",value);
   ////////////////////////////////////////////////////CREATE ANSWER//////////////////////////////////////////
 
   const createAnswer = useCallback(async (user_id: string, offer: RTCSessionDescriptionInit) => {
-    console.log(user_id);
+
 
     if (!peerConnection.current[user_id]) {
       await createPeerConnection(user_id);
@@ -214,9 +216,9 @@ console.log("whyyy",value);
     }
   }, [createPeerConnection, roomId, socket, value]);
 
-   ////////////////////////////////////////////////////ADD ANSWER//////////////////////////////////////////
+  ////////////////////////////////////////////////////ADD ANSWER//////////////////////////////////////////
 
-   const addAnswer = async (answer: RTCSessionDescriptionInit, user_id: string) => {
+  const addAnswer = async (answer: RTCSessionDescriptionInit, user_id: string) => {
     if (peerConnection.current[user_id] && !peerConnection.current[user_id].currentRemoteDescription) {
       try {
         await peerConnection.current[user_id].setRemoteDescription(answer);
@@ -227,11 +229,11 @@ console.log("whyyy",value);
 
     if (userVideoSrc.current && remoteStream.current[user_id] && userVideoSrc2.current) {
       if (userVideoSrc.current.srcObject) {
-        console.log("doneee", remoteStream.current[user_id], remoteStream.current, peerConnection.current);
+
 
         userVideoSrc2.current.srcObject = remoteStream.current[user_id]
       } else {
-        console.log("doneee", remoteStream.current[user_id], remoteStream.current, peerConnection.current);
+
 
         userVideoSrc.current.srcObject = remoteStream.current[user_id]
       }
@@ -240,141 +242,216 @@ console.log("whyyy",value);
     }
   };
 
-    ////////////////////////////////////////////////////SOCKET EVENT LISTENERS//////////////////////////////////////////
+  ////////////////////////////////////////////////////SOCKET EVENT LISTENERS//////////////////////////////////////////
 
-    useEffect(() => {
-        const handleCallEnd = (userData: any) => {
-          const { remoteUser_id } = userData;
-          peerConnection.current[remoteUser_id] = null;
-      
-          // Stop remote stream tracks if they exist
-          if (remoteStream.current[remoteUser_id]) {
-            remoteStream.current[remoteUser_id].getTracks().forEach((track: MediaStreamTrack) => track.stop());
-          }
-          remoteStream.current[remoteUser_id] = null;
-          console.log('${remoteUser_id} logged out');
-        };
-      
-        const handleNewUser = async (user_id: string) => {
-          console.log("userjoined",user_id);
-          
-          await handleUserJoined(user_id);
-        };
-      
-        const handleReceivedPeerToPeer = async (data: any) => {
-          console.log("remoteUser_id ", data.remoteUser_id, " value ", value);
-      
-          if (data.remoteUser_id == value) {
-            if (data.type === "offer") {
-              console.log("offered");
-              await createAnswer(data.user_id, data.offer);
-            }
-            if (data.type === "answer") {
-              console.log("answered");
-              await addAnswer(data.answer, data.user_id);
-            }
-            if (data.type === "candidate") {
-              if (peerConnection.current[data.user_id]) {
-                console.log("ince candiadding");
-                await peerConnection.current[data.user_id].addIceCandidate(data.candidate, data.user_id);
-              }
-            }
-          }
-        };
-      
-        // Attach socket event listeners
-        socket?.on("call-end", handleCallEnd);
-        socket?.on("newUser", handleNewUser);
-        socket?.on("receivedPeerToPeer", handleReceivedPeerToPeer);
-      
-        // Clean up event listeners when the component unmounts
-        return () => {
-          socket?.off("call-end", handleCallEnd);
-          socket?.off("newUser", handleNewUser);
-          socket?.off("receivedPeerToPeer", handleReceivedPeerToPeer);
-        };
-      }, [createAnswer, handleUserJoined, socket, value]);
+  useEffect(() => {
+    const handleCallEnd = (userData: any) => {
+      const { remoteUser_id } = userData;
+      peerConnection.current[remoteUser_id] = null;
 
-    ////////////////////////////////////////////////////SELECTED STREAM LOGIC//////////////////////////////////////////
-    // useEffect(() => {
-    //     const updateVideoRef = (selectedStream: any) => {
-    //       if (selectedStream && videoRef.current) {
-    //         // Assign the video element to the ref
-    //         videoRef.current.srcObject = selectedStream; // Use srcObject to set the stream
-    //       }
-    //     };
-    
-    //     // Update the video ref when selectedStream changes
-    //     updateVideoRef(remoteStream.current[selected]);
-    //   }, [remoteStream, selected, setSelected]);
-    //////////////////////////////////////////////////////CAMERA LOGIC//////////////////////////////////////////
-    const toggleCamera = useCallback(() => {
-        const videoTrack = localStream.current?.getVideoTracks()[0];
-        if (videoTrack?.enabled) {
-          videoTrack.enabled = false;
-          setSlash((prevSlash) => ({ ...prevSlash, video: true }));
-        } else {
-          if (videoTrack) {
-            videoTrack.enabled = true;
-            setSlash((prevSlash) => ({ ...prevSlash, video: false }));
+      // Stop remote stream tracks if they exist
+      if (remoteStream.current[remoteUser_id]) {
+        remoteStream.current[remoteUser_id].getTracks().forEach((track: MediaStreamTrack) => track.stop());
+      }
+      remoteStream.current[remoteUser_id] = null;
+      console.log('${remoteUser_id} logged out');
+    };
+
+    const handleNewUser = async (user_id: string) => {
+
+
+      await handleUserJoined(user_id);
+    };
+
+    const handleReceivedPeerToPeer = async (data: any) => {
+      console.log("remoteUser_id ", data.remoteUser_id, " value ", value);
+
+      if (data.remoteUser_id == value) {
+        if (data.type === "offer") {
+          console.log("offered");
+          await createAnswer(data.user_id, data.offer);
+        }
+        if (data.type === "answer") {
+          console.log("answered");
+          await addAnswer(data.answer, data.user_id);
+        }
+        if (data.type === "candidate") {
+          if (peerConnection.current[data.user_id]) {
+            console.log("ince candiadding");
+            await peerConnection.current[data.user_id].addIceCandidate(data.candidate, data.user_id);
           }
         }
-      }, [localStream, setSlash]);
-    ////////////////////////////////////////////////////MIC LOGIC//////////////////////////////////////////
+      }
+    };
+    const handleRequest = async (data: any) => {
+      console.log("dATA.host", data.host, value);
 
-    const toggleMic = useCallback(() => {
-        const audioTrack = localStream.current?.getAudioTracks()[0];
-      
-        if (audioTrack?.enabled) {
-          audioTrack.enabled = false;
-          setSlash((prevSlash) => ({ ...prevSlash, audio: true }));
-        } else {
-          if (audioTrack) {
-            audioTrack.enabled = true;
-            setSlash((prevSlash) => ({ ...prevSlash, audio: false }));
+      if (data.host === value) {
+        setNewUser((prevUsers: any) => [...prevUsers, data]);
+      }
+    };
+
+
+
+    // Attach socket event listeners
+    socket?.on("call-end", handleCallEnd);
+    socket?.on("newUser", handleNewUser);
+    socket?.on("receivedPeerToPeer", handleReceivedPeerToPeer);
+    socket?.on("requestuser", handleRequest)
+    // Clean up event listeners when the component unmounts
+    return () => {
+      socket?.off("call-end", handleCallEnd);
+      socket?.off("newUser", handleNewUser);
+      socket?.off("receivedPeerToPeer", handleReceivedPeerToPeer);
+      socket?.off("requestuser", handleRequest)
+    };
+  }, [createAnswer, handleUserJoined, socket, value]);
+
+  ////////////////////////////////////////////////////SELECTED STREAM LOGIC//////////////////////////////////////////
+  // useEffect(() => {
+  //     const updateVideoRef = (selectedStream: any) => {
+  //       if (selectedStream && videoRef.current) {
+  //         // Assign the video element to the ref
+  //         videoRef.current.srcObject = selectedStream; // Use srcObject to set the stream
+  //       }
+  //     };
+
+  //     // Update the video ref when selectedStream changes
+  //     updateVideoRef(remoteStream.current[selected]);
+  //   }, [remoteStream, selected, setSelected]);
+  //////////////////////////////////////////////////////CAMERA LOGIC//////////////////////////////////////////
+  const toggleCamera = useCallback(() => {
+    const videoTrack = localStream.current?.getVideoTracks()[0];
+    console.log(localStream.current?.getVideoTracks()[0]);
+
+    if (videoTrack?.enabled) {
+      videoTrack.enabled = false;
+
+      setSlash((prevSlash) => ({ ...prevSlash, video: true }));
+    } else {
+      if (videoTrack) {
+        videoTrack.enabled = true;
+        setSlash((prevSlash) => ({ ...prevSlash, video: false }));
+      }
+    }
+  }, [localStream, setSlash]);
+  ////////////////////////////////////////////////////MIC LOGIC//////////////////////////////////////////
+
+  const toggleMic = useCallback(() => {
+    const audioTrack = localStream.current?.getAudioTracks()[0];
+    console.log("audiotrack", audioTrack);
+
+    if (audioTrack?.enabled) {
+      audioTrack.enabled = false;
+      setSlash((prevSlash) => ({ ...prevSlash, audio: true }));
+    } else {
+      if (audioTrack) {
+        audioTrack.enabled = true;
+        setSlash((prevSlash) => ({ ...prevSlash, audio: false }));
+      }
+    }
+  }, [localStream, setSlash]);
+
+
+  ////////////////////////////////////////////////////END CALL AND GO TO PAGE//////////////////////////////////////////
+
+  const endCall = useCallback(async () => {
+    if (localStream.current) {
+      localStream.current.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+      if (remoteStream.current) {
+        Object.entries(remoteStream.current).map(([streamKey, streamValue], index) => {
+          if (remoteStream.current[streamKey]) {
+            remoteStream.current[streamKey].getTracks().forEach((track: MediaStreamTrack) => track.stop());
           }
+
+        });
+      }
+      socket?.emit("call-end", { remoteUser_id: value, roomId });
+      navigate('/end')
+      // router?.push(/thread/${returnValue.value[0].id});
+    }
+  }, [socket, value, roomId, navigate]);
+
+
+  ////////////////////////////////////////////////////CREATE ANSWER//////////////////////////////////////////
+  useEffect(() => {
+    socket.on("message received", (newMessageRecieved) => {
+
+      console.log("message recieved", newMessageRecieved);
+      console.log(displayChat);
+
+      const lastMessage = displayChat[displayChat.length - 1];
+      console.log(lastMessage);
+
+      if (!lastMessage || lastMessage.content !== newMessageRecieved.content) {
+        setDisplayChat((prevChat: any) => [...prevChat, newMessageRecieved]);
+      }
+
+    })
+
+    return () => {
+      socket.off("message received", (newMessageRecieved) => {
+
+        console.log("message recieved", newMessageRecieved);
+        const lastMessage = displayChat[displayChat.length - 1];
+        console.log(lastMessage);
+
+        if (!lastMessage || lastMessage?.content !== newMessageRecieved.content) {
+          setDisplayChat((prevChat: any) => [...prevChat, newMessageRecieved]);
         }
-      }, [localStream, setSlash]);
+
+      });
+    };
+  }, [displayChat, socket])
+  const handleKeyDown = useCallback(async (e: any, message: any) => {
+    e.preventDefault()
+    if (message) {
+      try {
+        const msgData = { from: value, fileType: "text", content: message, createdAt: new Date() }
+        console.log(msgData)
+
+        // setMessage('')
 
 
-    ////////////////////////////////////////////////////END CALL AND GO TO PAGE//////////////////////////////////////////
-
-    const endCall = useCallback(async () => {
-        if (localStream.current) {
-          localStream.current.getTracks().forEach((track: MediaStreamTrack) => track.stop());
-          if (remoteStream.current) {
-            Object.entries(remoteStream.current).map(([streamKey, streamValue], index) => {
-              remoteStream.current[streamKey].getTracks().forEach((track: MediaStreamTrack) => track.stop());
-            });
-          }
-          socket?.emit("call-end", { remoteUser_id: value, roomId });
-          // router?.push(/thread/${returnValue.value[0].id});
-        }
-      }, [localStream, remoteStream, socket, value, roomId]);
+        // if (chatContainerRef.current) {
+        //     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        // }
 
 
-    ////////////////////////////////////////////////////CREATE ANSWER//////////////////////////////////////////
-  
-    const data = useMemo(
-        () => ({
-            socket,
-            localStream,
-            "videoConnections": peerConnection,
-            remoteStream,
-            toggleMic,
-            toggleCamera,
-            endCall,
-            myVideo,
-            selected,
-            setSelected
-            
-        }),
-        [endCall, socket, toggleCamera, toggleMic]
-    );
+        setTimeout(() => {
+          socket.emit("new message", { ...msgData, id: roomId })
+        }, 500)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [value, socket, roomId]);
+
+  const data = useMemo(
+    () => ({
+      socket,
+      localStream,
+      "videoConnections": peerConnection,
+      remoteStream,
+      toggleMic,
+      toggleCamera,
+      endCall,
+      myVideo,
+      selected,
+      setSelected,
+      handleKeyDown,
+      user: value,
+      chats: displayChat,
+      setChats: setDisplayChat,
+      newUser,
+      roomId
+    }),
+    [socket, toggleMic, toggleCamera, endCall, selected, handleKeyDown, value, displayChat, newUser, roomId]
+  );
 
   return (
     <SocketContext.Provider value={data}>
       {props.children}
     </SocketContext.Provider>
-  );
+  );
 };

@@ -1,42 +1,44 @@
 import { isEqual } from 'lodash';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { useParams } from 'react-router-dom';
+import { SocketContext } from '../../Context/SocketContext';
 
-const dummyMessages = [
-  {
-    content: "Hello there!",
-    sender: { id: 1, username: "JohnDoe" },
-    createdAt: new Date(),
-  },
-  {
-    content: "Hi! How are you?",
-    sender: { id: 2, username: "JaneSmith" },
-    createdAt: new Date(),
-  },
-  {
-    content: "I'm doing well, thank you!",
-    sender: { id: 1, username: "JohnDoe" },
-    createdAt: new Date(),
-  },
-  {
-    content: "That's great to hear!",
-    sender: { id: 2, username: "JaneSmith" },
-    createdAt: new Date(),
-  },
-  {
-    content:
-      "Lorem ipsum dolor sit amet, consectetur adipiscingasdf asdfasdfsd asdfasdfasdf asdfasdfasdfasdf as asdfasdfasdfelit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    sender: { id: 1, username: "JohnDoe" },
-    createdAt: new Date(),
-  },
-  {
-    content:
-      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    sender: { id: 2, username: "JaneSmith" },
-    createdAt: new Date(),
-  },
-];
+// const dummyMessages:any = [
+//   {
+//     content: "Hello there!",
+//     sender: { id: 1, username: "JohnDoe" },
+//     createdAt: new Date(),
+//   },
+//   {
+//     content: "Hi! How are you?",
+//     sender: { id: 2, username: "JaneSmith" },
+//     createdAt: new Date(),
+//   },
+//   {
+//     content: "I'm doing well, thank you!",
+//     sender: { id: 1, username: "JohnDoe" },
+//     createdAt: new Date(),
+//   },
+//   {
+//     content: "That's great to hear!",
+//     sender: { id: 2, username: "JaneSmith" },
+//     createdAt: new Date(),
+//   },
+//   {
+//     content:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscingasdf asdfasdfsd asdfasdfasdf asdfasdfasdfasdf as asdfasdfasdfelit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+//     sender: { id: 1, username: "JohnDoe" },
+//     createdAt: new Date(),
+//   },
+//   {
+//     content:
+//       "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+//     sender: { id: 2, username: "JaneSmith" },
+//     createdAt: new Date(),
+//   },
+// ];
 
-const user = { id: 2, username: "JaneSmith" };
+// const user = { id: 2, username: "JaneSmith" };
 
 const formatTimestamp = (timestamp:any) => {
   const date = timestamp;
@@ -50,10 +52,15 @@ const formatTimestamp = (timestamp:any) => {
 
 const Chats = () => {
     const [expandedMessages, setExpandedMessages] = useState<any>([]);
+    const { 
+      user,chats,setChats
+       } = useContext(SocketContext)
+     
   return (
     <>
-      {dummyMessages?.map((message, idx) => {
-        const isUserSender = isEqual(message?.sender, user);
+      {chats?.map((message:{from:string,content:string,id:string,createdAt: Date}, idx:number) => {
+       const isUserSender = message?.from === user ? true : false;
+
         const isExpanded = expandedMessages?.includes(idx);
         const toggleExpand = () => {
           if (isExpanded) {
@@ -98,7 +105,7 @@ const Chats = () => {
                 </div>
               )}
               <div className="flex w-fit h-full text-[10px] text-gray-400">
-                {formatTimestamp(message?.createdAt)}
+               
               </div>
             </div>
           </div>

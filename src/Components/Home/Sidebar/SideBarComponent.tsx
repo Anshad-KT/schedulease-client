@@ -9,18 +9,18 @@ import { Link } from 'react-router-dom';
 const SideBarComponent = () => {
    
   return (
-    <div className='lg:w-full lg:h-full col-span-2'>
-        <div className='h-screen bg-white flex-row'>
+    <div className='lg:w-full lg:h-full col-span-2 mb-10'>
+        <div className='lg:h-screen bg-white flex-row'>
             <div className='flex-row justify-center items-center'>
-            <div>
+            {/* <div>
                 <img width={250}  src="/logo/logo.png" alt="logo"  />
-            </div>
+            </div> */}
             <div className='w-100 flex justify-center items-center mt-5 '>
                     <button className='bg-primary h-12 w-48 rounded-3xl text-white'><Link to='/create'>Create</Link></button>
             </div>
         
             </div>
-            <div className='w-100 flex-row mt-20 '>
+            <div className='w-100 flex-row lg:mt-20 mt-5'>
             <div className='flex justify-center items-center'>
             <div className='w-10/12 h-11 flex justify-center items-center shadow-md mt-5 cursor-pointer'>
                <section className='mr-3'>

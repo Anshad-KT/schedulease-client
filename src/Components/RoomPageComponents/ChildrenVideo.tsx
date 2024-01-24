@@ -6,6 +6,8 @@ const ChildrenVideo = ({ onClick, userVideoSrc}: any) => {
     useEffect(() => {
       const handleVideoRef = () => {
         if (videoRef.current && userVideoSrc instanceof MediaStream) {
+          console.log(userVideoSrc);
+          
           videoRef.current.srcObject = userVideoSrc;
         }
       };

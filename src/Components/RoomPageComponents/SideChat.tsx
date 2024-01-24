@@ -12,27 +12,27 @@ import { selectedVideo } from '../../Redux/video/selectedVideoSlice';
 const SideChat = ({setStreamKey,streamKeys}:any) => {
   const [state, setSstate] = useState<boolean>(false)
   const handleStreamKeyChange = (newStreamKey: string) => {
-    console.log('Updating streamKey to:', newStreamKey);
     setStreamKey(newStreamKey);
   };
+  const [message,setMessage] = useState('')
   const { 
     remoteStream,
-    
+    handleKeyDown,
+    setChats,
+    user
      } = useContext(SocketContext)
-     console.log(remoteStream);
-     console.log(setStreamKey);
+    
      
-     console.log('streamKeys in SideChat:', streamKeys);
+    
   const dispatch = useDispatch()
   return (
-    <>{streamKeys+"loooooooooooo"}
+    <>
       <div className="flex w-full h-full rounded-md overflow-y-scroll flex-col py-2 px-2 gap-2 text-gray-500 border">
         {state ? Object.entries(remoteStream.current).map(([streamKey, streamValue], index) => {
-          console.log(streamKeys,streamKeys,"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+       
           
           if (streamKey !== streamKeys) {
-            // Assuming streamValue is an object with username and email properties
-            console.log("koduos",streamKey,streamKeys);
+          
             
 
             return (
@@ -53,10 +53,16 @@ const SideChat = ({setStreamKey,streamKeys}:any) => {
               <RiAttachment2 onClick={() => setSstate(!state)} fontSize={"23"} color="gray" />
             </button>
             <input
+             value={message}
+             onChange={(e)=>setMessage(e.target.value)}
               className="flex w-full h-fit p-2 border rounded-xl outline-none "
               type="text"
             />
             <button
+            onClick={(e)=>{
+              handleKeyDown(e,message)
+              setChats((prevChat: any) => [...prevChat, { from: user, fileType: "text", content: message, createdAt: new Date() }])
+            }}
               type="submit"
               className=" h-fit w-fit p-2 flex items-center rounded-xl bg-primary text-white"
             >
