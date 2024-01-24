@@ -1,6 +1,7 @@
 import axios from 'axios'
 //const BASE_URL = process.env.REACT_APP_BASE_URL as string;
- const BASE_URL = 'http://scheduleease.com';
+ const BASE_URL =  process.env.REACT_APP_BASE_URL ? "http://server.schedulease.cloud" :'http://scheduleease.com';
+console.log(BASE_URL);
 
 export const api = axios.create({
     baseURL: BASE_URL,
