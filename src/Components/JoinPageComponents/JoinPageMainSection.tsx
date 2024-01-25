@@ -111,12 +111,12 @@ const JoinPageMainSection = () => {
       </div>
       <div className="w-full h-full justify-center items-center hidden md:flex flex-col gap-y-5 pb-20">
         <img src="/icons/avatar.jpg" alt="life_plus_logo" className="w-36 h-36 rounded-3xl" />
-        { !loading && userAccess && <p>Your meeting is ready</p> }
+        { !userAccess && !loading && userAccess && <p>Your meeting is ready</p> }
        
- { host ? <p>Requesting host{host} to join...</p> : <p>Host has not yet joined</p>  }
+ { !userAccess && host ? <p>Requesting host to join...</p> : <p>Host has not yet joined</p>  }
  
- {decline ? <p>Host declined</p> : null}
-
+ { !userAccess && decline ? <p>Host declined</p> : null}
+ {userAccess && <p>Your meeting is ready..</p> }
         <div>
           {getMeetingData?.host == username ? (
             <button onClick={() => navigate(`/video/${roomId}/${username}`)} className="bg-danger_color bg-primary text-white px-4 py-3 text-[12px] rounded-full">
