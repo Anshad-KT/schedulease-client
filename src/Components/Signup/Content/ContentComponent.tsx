@@ -14,6 +14,7 @@ const ContentComponent = () => {
     console.log(response);
 console.log({email:response?.email, username:response?.displayName});
 
+   try {
     const data = await userSignup({email:response?.email, username:response?.displayName})
     console.log(data);
     if(data.msg){
@@ -23,6 +24,13 @@ console.log({email:response?.email, username:response?.displayName});
       localStorage.setItem("user",JSON.stringify(data.addedUser))
       navigate('/')
     }
+  } catch (error) {
+    console.log("error while fetching userSignup");
+    
+    console.log(error);
+    
+   }
+  
     
     // updateUser(data)
  },[])
