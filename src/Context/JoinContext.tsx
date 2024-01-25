@@ -9,7 +9,7 @@ interface SocketProviderProps {
 
 
 //const ENDPOINT = process.env.REACT_APP_BASE_URL as string
- const ENDPOINT=process.env.REACT_APP_BASE_URL ? "http://server.schedulease.cloud" :'http://scheduleease.com';
+ const ENDPOINT=process.env.REACT_APP_BASE_URL ? "https://server.schedulease.cloud" :'http://scheduleease.com';
 
 export const JoinContext = createContext<any>(null);
 
