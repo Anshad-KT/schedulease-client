@@ -9,8 +9,9 @@ import { MdOutlineScreenShare } from "react-icons/md";
 import { SocketContext } from "../../Context/SocketContext";
 import { useSelector } from "react-redux";
 import AnimatedPopup from "./JoinRequest";
+import LoadingComponent from "../Loading/LoadingComponent";
 
-const VideoCall = ({streamKeys}:any) => {
+const VideoCall = () => {
   
   const [muteMic, setMuteMic] = useState(false);
   const [muteCamera, setMuteCamera] = useState(false);
@@ -23,30 +24,35 @@ const VideoCall = ({streamKeys}:any) => {
     toggleMic,
     endCall,
     newUser,
+    setStreamKey,
+    streamKeys,
     setSelected } = useContext(SocketContext)
 
   
   const videoRef = useRef<any>(null);
 
  useEffect(()=>{
-
+  if(streamKeys)
   videoRef.current.srcObject =  remoteStream.current[streamKeys]
  
   
  },[ remoteStream, streamKeys])
 
-  
+
   return (
     <div className="w-full h-full flex flex-col ">
       <div className="w-full h-full rounded-md overflow-hidden">
         <div className="w-full h-full relative rounded-md ">
-          <video
-            className="w-full h-full object-cover rounded-md"
+          {!streamKeys ? ( <div className="w-full h-screen border-primary flex justify-center items-center shadow-2xl">
+            <LoadingComponent />
+          </div>  ): (<video
+            className="w-full h-screen object-cover rounded-md"
            ref={videoRef}
             autoPlay
-          />
+          />)}
+          
           <div className="bg-primary bg-opacity-70 flex w-fit h-fit rounded-full py-1 px-2 text-[11px] text-white absolute bottom-3 left-3 ">
-            {streamKeys}
+            {streamKeys && streamKeys}
           </div>
           <div className=" w-[270px] h-[170px] rounded-md overflow-hidden border absolute bottom-3 right-3 text-white ">
             <div className="max-w-full max-h-full rounded-md">

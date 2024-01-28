@@ -4,11 +4,12 @@ import CardComponent from '../Card/CardComponent'
 import { getAllMeetingGuest, getAllMeetingHost } from '../../../Services/meetings/meetingsApi'
 import { data } from 'autoprefixer'
 import { updateUser } from '../../../Redux/user/userSlice'
+import { useNavigate } from 'react-router-dom'
 
 
 
 const ContentComponent = () => {
-
+  const navigate = useNavigate()
   const [meetings,setMeetings] = useState([])
   const handleSignIn = useCallback(async () => {
     console.log("why this kolavery");
@@ -48,6 +49,13 @@ const ContentComponent = () => {
        <div >
          <img width={250}  src="/logo/logo.png" alt="logo"  />
        </div>
+       <button onClick={() => {
+  localStorage.clear();
+  navigate('/login');
+}}>
+  Logout
+</button>
+        
       <button className='lg:hidden' onClick={handleButtonClick}>
           Toggle
        </button> 

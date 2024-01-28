@@ -26,7 +26,7 @@ export const SocketProvider = (props: SocketProviderProps) => {
   const navigate = useNavigate()
   console.log("hissl", socket);
   const [displayChat, setDisplayChat] = useState<any>([]);
-
+  const [streamKeys, setStreamKey] = useState<string | null>(null); // Set an initial value
   const [streams, setStreams] = useState<any>([])
   const [selected, setSelected] = useState<any>([])
   const myVideo = useRef<HTMLVideoElement | null>(null);
@@ -243,6 +243,8 @@ export const SocketProvider = (props: SocketProviderProps) => {
   };
 
   ////////////////////////////////////////////////////SOCKET EVENT LISTENERS//////////////////////////////////////////
+  
+
 
   useEffect(() => {
     const handleCallEnd = (userData: any) => {
@@ -252,9 +254,22 @@ export const SocketProvider = (props: SocketProviderProps) => {
       // Stop remote stream tracks if they exist
       if (remoteStream.current[remoteUser_id]) {
         remoteStream.current[remoteUser_id].getTracks().forEach((track: MediaStreamTrack) => track.stop());
+        console.log("track stopped");
+        
       }
       remoteStream.current[remoteUser_id] = null;
-      console.log('${remoteUser_id} logged out');
+      delete remoteStream.current[remoteUser_id];
+      delete  peerConnection.current[remoteUser_id]
+      console.log('${remoteUser_id} logged out' ,remoteStream.current);
+      const remainingUsers = Object.keys(remoteStream.current).filter((key) => remoteStream.current[key]);
+  
+      // If there is at least one user, set the first user as the selected key
+      if (remainingUsers.length > 0) {
+        const newSelectedKey = remainingUsers[0];
+        setStreamKey(newSelectedKey);
+      }else if(remainingUsers.length == 0){
+        setStreamKey(null)
+      }
     };
 
     const handleNewUser = async (user_id: string) => {
@@ -375,34 +390,25 @@ export const SocketProvider = (props: SocketProviderProps) => {
 
   ////////////////////////////////////////////////////CREATE ANSWER//////////////////////////////////////////
   useEffect(() => {
-    socket.on("message received", (newMessageRecieved) => {
-
-      console.log("message recieved", newMessageRecieved);
-      console.log(displayChat);
-
+    const handleMessageReceived = (newMessageReceived:any) => {
+      console.log("message received", newMessageReceived);
+  
+      // Check if the new message is different from the last message in displayChat
       const lastMessage = displayChat[displayChat.length - 1];
-      console.log(lastMessage);
-
-      if (!lastMessage || lastMessage.content !== newMessageRecieved.content) {
-        setDisplayChat((prevChat: any) => [...prevChat, newMessageRecieved]);
+      if (!lastMessage || lastMessage.content !== newMessageReceived.content) {
+        setDisplayChat((prevChat:any) => [...prevChat, newMessageReceived]);
       }
-
-    })
-
-    return () => {
-      socket.off("message received", (newMessageRecieved) => {
-
-        console.log("message recieved", newMessageRecieved);
-        const lastMessage = displayChat[displayChat.length - 1];
-        console.log(lastMessage);
-
-        if (!lastMessage || lastMessage?.content !== newMessageRecieved.content) {
-          setDisplayChat((prevChat: any) => [...prevChat, newMessageRecieved]);
-        }
-
-      });
     };
-  }, [displayChat, socket])
+  
+    // Register the event handler
+    socket.on("message received", handleMessageReceived);
+  
+    // Unregister the event handler on component unmount
+    return () => {
+      socket.off("message received", handleMessageReceived);
+    };
+  }, [displayChat, socket]);
+  
   const handleKeyDown = useCallback(async (e: any, message: any) => {
     e.preventDefault()
     if (message) {
@@ -425,7 +431,7 @@ export const SocketProvider = (props: SocketProviderProps) => {
         console.log(error);
       }
     }
-  }, [value, socket, roomId]);
+  }, []);
 
   const data = useMemo(
     () => ({
@@ -444,9 +450,10 @@ export const SocketProvider = (props: SocketProviderProps) => {
       chats: displayChat,
       setChats: setDisplayChat,
       newUser,
-      roomId
+      roomId,
+      streamKeys, setStreamKey
     }),
-    [socket, toggleMic, toggleCamera, endCall, selected, handleKeyDown, value, displayChat, newUser, roomId]
+    [socket, toggleMic, toggleCamera, endCall, selected, handleKeyDown, value, displayChat, newUser, roomId, streamKeys]
   );
 
   return (

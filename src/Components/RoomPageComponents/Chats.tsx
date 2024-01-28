@@ -72,7 +72,7 @@ const Chats = () => {
 
         return (
           <div
-            className={`flex w-full justify-${isUserSender ? "start" : "end"}`}
+            className={`flex w-full justify-${!isUserSender ? "start" : "end"}`}
             key={idx}
           >
             <div

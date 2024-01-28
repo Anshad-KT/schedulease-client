@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { RiAttachment2 } from "react-icons/ri";
 import { IoIosSend } from "react-icons/io";
 import Chats from './Chats'
@@ -9,19 +9,21 @@ import { SocketContext } from '../../Context/SocketContext';
 import { updateUser } from '../../Redux/user/userSlice';
 import { selectedVideo } from '../../Redux/video/selectedVideoSlice';
 
-const SideChat = ({setStreamKey,streamKeys}:any) => {
+const SideChat = () => {
   const [state, setSstate] = useState<boolean>(false)
-  const handleStreamKeyChange = (newStreamKey: string) => {
-    setStreamKey(newStreamKey);
-  };
+ 
   const [message,setMessage] = useState('')
   const { 
     remoteStream,
     handleKeyDown,
     setChats,
-    user
+    user,
+    setStreamKey,
+    streamKeys
      } = useContext(SocketContext)
-    
+     const handleStreamKeyChange = (newStreamKey: string) => {
+      setStreamKey(newStreamKey);
+    };
      
     
   const dispatch = useDispatch()
@@ -63,7 +65,7 @@ const SideChat = ({setStreamKey,streamKeys}:any) => {
               handleKeyDown(e,message)
               setChats((prevChat: any) => [...prevChat, { from: user, fileType: "text", content: message, createdAt: new Date() }])
             }}
-              type="submit"
+              type="button"
               className=" h-fit w-fit p-2 flex items-center rounded-xl bg-primary text-white"
             >
               <IoIosSend fontSize={"23"} />

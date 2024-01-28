@@ -62,6 +62,11 @@ const JoinPageMainSection = () => {
         ...prevState,
         host: true,
       }));
+      setTimeout(()=>{
+        socket.emit('reqhost', { roomId, userId: username })
+        console.log("reqhost emitted");
+        
+       },3000)
     }
     })
     socket?.on('pending', (data: any) => {
@@ -113,7 +118,7 @@ const JoinPageMainSection = () => {
         <img src="/icons/avatar.jpg" alt="life_plus_logo" className="w-36 h-36 rounded-3xl" />
         { !userAccess && !loading && userAccess && <p>Your meeting is ready</p> }
        
- { !userAccess && host ? <p>Requesting host to join...</p> : <p>Host has not yet joined</p>  }
+ { getMeetingData?.host == username ? <p>Your meeting is ready..</p>    : !userAccess && host ? <p>Requesting host to join...</p> : userAccess ? "" : <p>Host has not yet joined</p>  }
  
  { !userAccess && decline ? <p>Host declined</p> : null}
  {userAccess && <p>Your meeting is ready..</p> }

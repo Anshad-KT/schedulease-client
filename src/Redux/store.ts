@@ -12,7 +12,7 @@ const persistConfig={
 
 const persistUserReducer= persistReducer(persistConfig,adminReducer)
 
-export const Store = configureStore({
+export const Store = configureStore({ 
     reducer:{
         user:persistUserReducer,
         selectedVideo:selectedVideoReducer

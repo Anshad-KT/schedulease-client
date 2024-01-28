@@ -16,8 +16,8 @@ const ChildrenVideo = ({ onClick, userVideoSrc}: any) => {
   
   
     return (
-      <div onClick={onClick} className='ml-5 w-5/6 h-1/4 bg-violet-400 my-5'>
-        <video className='shadow-3xl rounded-3xl' ref={videoRef} autoPlay playsInline muted width="324" height="200" />
+      <div onClick={onClick} className='ml-5 w-5/6 h-1/4 my-5'>
+        <video className='shadow-3xl rounded-3xl w-full object-cover' ref={videoRef} autoPlay playsInline muted width="324" height="200" />
       </div>
     );
   };
