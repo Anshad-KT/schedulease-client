@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { signInWithGoogle } from '../../../Firebase/FireBase';
 import { userLogin, userSignup } from '../../../Services/user/userLogin';
 import { updateUser } from '../../../Redux/user/userSlice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ContentComponent = () => {
   const dispatch = useDispatch()
@@ -60,7 +60,7 @@ console.log({email:response?.email, username:response?.displayName});
             <p className='mt-2 ml-2 lg:ml-5'>{window.innerWidth >= 640 ? 'Signup with Google,' : 'Signup'}</p>
         </div>
     </div>
-
+    <p className='mt-5'>Already have account ?<Link className='text-violet-800' to='/login'> Login here</Link></p>
     <div className='flex justify-center items-center mt-2 sm:mt-4'>
         {err}
     </div>
