@@ -76,13 +76,16 @@ const ContentComponent = () => {
          
          </div>
          <div className='lg:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 lg:gap-4 ml-12 lg:ml-0'>
-   "{meetings.map((item:any,index)=>{
-    return(
-      <CardComponent  data={item} />
-      
-     )
-  })
-   }
+         {meetings.length === 0 ? (
+  <p style={{ color: 'gray', fontStyle: 'italic' }}>
+    Create a meeting to display them here.
+  </p>
+) : (
+  meetings.map((item: any, index: number) => (
+    <CardComponent key={index} data={item} />
+  ))
+)}
+
    
  
 
