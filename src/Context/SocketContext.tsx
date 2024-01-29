@@ -57,7 +57,7 @@ export const SocketProvider = (props: SocketProviderProps) => {
   ////////////////////////////////////////////////////CREATE PEER CONNECTION//////////////////////////////////////////
 
   const createPeerConnection = useCallback(async (user_id: string) => {
-    peerConnection.current[user_id] = new RTCPeerConnection(Servers);
+    peerConnection.current[user_id] = new RTCPeerConnection(Servers); 
 
     remoteStream.current[user_id] = new MediaStream();
 

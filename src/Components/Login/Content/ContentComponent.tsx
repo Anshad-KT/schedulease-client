@@ -14,7 +14,7 @@ const ContentComponent = () => {
     const data = await userLogin({ email: response?.email, username: response?.displayName })
     console.log(data);
     if (data.msg) {
-      setErr("Email already registered")
+      setErr("No account associated with this email")
     } else {
       console.log(JSON.stringify(data.addedUser));
 
@@ -52,7 +52,7 @@ const ContentComponent = () => {
         </div>
     </div>
 
-    <div className='flex justify-center items-center mt-2 sm:mt-4'>
+    <div className='flex text-red-600 justify-center items-center mt-2 sm:mt-4'>
         {err}
     </div>
 
