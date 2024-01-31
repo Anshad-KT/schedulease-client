@@ -60,29 +60,18 @@ const ContentComponent = () => {
 
   const navigate = useNavigate()
   const [value, onChange] = useState<Value>(date1?.formattedDate ? new Date(date1.formattedDate) : null);
-
-  const [showModal, setShowModal] = useState(false);
-
-
-
-
-
   const [selectedTimes, setSelectedTimes] = useState<any>(details?.timeOptions?.[0] || '');
-
-
-
   const submitData = async () => {
-    
-    const data = { dateOptions: value, timeOptions: selectedTimes, id, userId }
+  
     await updateMeeting({ dateOptions: value, timeOptions: selectedTimes, id, userId })
     navigate('/end')
   }
   const handleTimeClick = (time: string) => {
-    
     console.log(time);
 
     if (selectedTimes === time) {
      
+  console.log("error");
   
 
 
