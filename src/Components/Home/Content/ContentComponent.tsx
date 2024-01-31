@@ -13,8 +13,7 @@ const ContentComponent = () => {
   const navigate = useNavigate()
   const [meetings,setMeetings] = useState([])
   const handleSignIn = useCallback(async () => {
-    console.log("why this kolavery");
-    
+   
     const guestResponse:[] = await getAllMeetingGuest()
     const hostResponse:[] = await getAllMeetingHost()
     console.log(guestResponse,hostResponse);
@@ -83,8 +82,8 @@ const ContentComponent = () => {
          </div>
          <div className='lg:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 lg:gap-4 ml-12 lg:ml-0'>
          {meetings.length === 0 ? (
-  <p className='text-gray-600 ml-48'>
-    Create a meeting to display them here.
+  <p className='text-gray-600 ml-20'>
+    No meetings present
   </p>
 ) : (
   meetings.map((item: any, index: number) => (
