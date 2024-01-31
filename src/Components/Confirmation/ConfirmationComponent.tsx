@@ -19,8 +19,6 @@ const ContentComponent = () => {
   const [details, setDetails] = useState<any>({})
   const [date1, setDate] = useState<any>()
   useEffect(() => {
-    console.log("looo");
-
     getMeetingGuestById(id as string)
       .then((res) => {
         setDetails(res)

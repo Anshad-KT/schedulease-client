@@ -12,13 +12,12 @@ interface UserProtectedRouterProps {
   
     useEffect(() => {
       const fetchData = async () => {
-        console.log("det");
   
         const storedUser: string | null = localStorage.getItem("user");
         console.log(storedUser);
   
         if (storedUser) {
-          console.log("heh");
+     
   
           const storedUser1 = JSON.parse(storedUser);
           console.log(storedUser1);
@@ -26,12 +25,12 @@ interface UserProtectedRouterProps {
           setUser({ user: { email: storedUser1?.email, username: storedUser1?.displayName } });
   
           const res = await observeAuthStateLoggedInSignup();
-          console.log("res,", res);
+   
   
           setGuard(res);
         } else {
           navigate('/login');
-          console.log("no storeduser");
+          
         }
       };
   
@@ -52,7 +51,7 @@ interface UserProtectedRouterProps {
     const navigate = useNavigate();
   
     useEffect(() => {
-      // Perform localStorage action
+      
       const storedUser = localStorage.getItem("user");
       console.log(JSON.stringify(storedUser));
   
@@ -64,21 +63,17 @@ interface UserProtectedRouterProps {
         });
         navigate('/');
       }else{
-        console.log("dey",storedUser);
-        
+     
         
       }
     }, [navigate]);
-  
- console.log(user?.user?.email,"loggerere");
+
  
   
     if (!user?.user?.email) {
       console.log("return children");
       return children;
     } 
-    console.log("yassar");
-    
       return null;
     
   };

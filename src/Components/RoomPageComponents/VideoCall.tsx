@@ -27,15 +27,10 @@ const VideoCall = () => {
     setStreamKey,
     streamKeys,
     setSelected } = useContext(SocketContext)
-
-  
   const videoRef = useRef<any>(null);
-
  useEffect(()=>{
   if(streamKeys)
   videoRef.current.srcObject =  remoteStream.current[streamKeys]
- 
-  
  },[ remoteStream, streamKeys])
 
 

@@ -6,14 +6,9 @@ interface SocketProviderProps {
     children: React.ReactNode;
   }
 
-
-
-//const ENDPOINT = process.env.REACT_APP_BASE_URL as string
- const ENDPOINT=process.env.REACT_APP_BASE_URL ? "https://server.schedulease.cloud" :'http://scheduleease.com';
+const ENDPOINT=process.env.REACT_APP_BASE_URL ? "https://server.schedulease.cloud" :'http://scheduleease.com';
 
 export const JoinContext = createContext<any>(null);
-
-
 
 export const JoinProvider = (props:SocketProviderProps) => {
   const [newUser, setNewUser] = useState<any>([])
@@ -31,7 +26,7 @@ export const JoinProvider = (props:SocketProviderProps) => {
           }
         };
         socket?.on("requestuser",handleRequest)
-        // Clean up event listeners when the component unmounts
+
         return () => {
    
           socket?.off("requestuser",handleRequest)

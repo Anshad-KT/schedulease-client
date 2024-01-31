@@ -18,14 +18,10 @@ const JoinPageMainSection = () => {
     const data = await getMeetingHostById(roomId!)
     console.log(setMeetingData(data));
     console.log(data);
-
-
   }, [roomId])
   useEffect(() => {
     socket?.on('hostresponse', (data: any) => {
       if (getMeetingData?.host !== username) {
-        console.log("host responswe");
-        
         if (data.result === false) {
           setStatus((prevState) => ({
             ...prevState,
@@ -41,11 +37,7 @@ const JoinPageMainSection = () => {
       }
     })
     socket?.on('nohost', (data: any) => {
-      console.log("sdsd",data.userId,username);
-      
-      if (getMeetingData?.host !== username) {
-        console.log("nohost",{ host, request, userAccess, decline });
-        
+      if (getMeetingData?.host !== username) { 
         setStatus((prevState) => ({
           ...prevState,
           host: false,
@@ -53,11 +45,8 @@ const JoinPageMainSection = () => {
       }
     })
     socket?.on('hostjoined', (data: any) => {
-      console.log("hoooosstt");
-      
+
       if (getMeetingData?.host !== username) {
-        console.log("host joine");
-        
       setStatus((prevState) => ({
         ...prevState,
         host: true,
@@ -107,9 +96,7 @@ const JoinPageMainSection = () => {
         <div className="flex text-[14px] font-medium px-10 text-gray-500">
           Schedule is your go to app to automate your appointments, built with simplicity and efficiency.
         </div>
-        {/* <div className="flex gap-x-3 w-fit h-fit mt-2 px-2 sm:px-0">
-          Interview for MERN stack developement
-        </div> */}
+        
       </div>
       <div className="h-full w-0.5 py-10 hidden md:flex">
         <div className="h-full w-full bg-gray-300"></div>

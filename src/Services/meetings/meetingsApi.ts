@@ -7,14 +7,14 @@ export const addMeeting = async (args:{title:string,host:string,dateOptions:any,
 };
 
 export const getAllMeetingGuest = async () => {
-  const {data} :any = await api.get("/api/meeting/guest/meeting")
+  const {data}  = await api.get("/api/meeting/guest/meeting")
   
   console.log(data);
   return data;
 };
 
 export const getMeetingGuestById = async (id: string) => {
-  console.log("reacge",id);
+ 
   
   const { data } = await api.get(`/api/meeting/guest/meeting/${id}`);
   console.log(data);
@@ -33,7 +33,7 @@ export const getMeetingHostById = async (id: string) => {
   return data;
 };
 
-export const updateMeeting = async({id,userId,timeOptions,dateOptions}:any) => {
+export const updateMeeting = async({id,userId,timeOptions,dateOptions}:{id:string,userId:string,timeOptions:string[],dateOptions:string[]}) => {
    const { data } = await api.post('/api/meeting/confirm',{id,userId,timeOptions,dateOptions})
    console.log(data)
    return data;

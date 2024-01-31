@@ -3,42 +3,7 @@ import React, { useContext, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { SocketContext } from '../../Context/SocketContext';
 
-// const dummyMessages:any = [
-//   {
-//     content: "Hello there!",
-//     sender: { id: 1, username: "JohnDoe" },
-//     createdAt: new Date(),
-//   },
-//   {
-//     content: "Hi! How are you?",
-//     sender: { id: 2, username: "JaneSmith" },
-//     createdAt: new Date(),
-//   },
-//   {
-//     content: "I'm doing well, thank you!",
-//     sender: { id: 1, username: "JohnDoe" },
-//     createdAt: new Date(),
-//   },
-//   {
-//     content: "That's great to hear!",
-//     sender: { id: 2, username: "JaneSmith" },
-//     createdAt: new Date(),
-//   },
-//   {
-//     content:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscingasdf asdfasdfsd asdfasdfasdf asdfasdfasdfasdf as asdfasdfasdfelit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-//     sender: { id: 1, username: "JohnDoe" },
-//     createdAt: new Date(),
-//   },
-//   {
-//     content:
-//       "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-//     sender: { id: 2, username: "JaneSmith" },
-//     createdAt: new Date(),
-//   },
-// ];
 
-// const user = { id: 2, username: "JaneSmith" };
 
 const formatTimestamp = (timestamp:any) => {
   const date = timestamp;
