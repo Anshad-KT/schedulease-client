@@ -5,6 +5,7 @@ import { getAllMeetingGuest, getAllMeetingHost } from '../../../Services/meeting
 import { data } from 'autoprefixer'
 import { updateUser } from '../../../Redux/user/userSlice'
 import { useNavigate } from 'react-router-dom'
+import { FaSignOutAlt } from 'react-icons/fa'
 
 
 
@@ -49,12 +50,17 @@ const ContentComponent = () => {
        <div >
          <img width={250}  src="/logo/logo.png" alt="logo"  />
        </div>
-       <button onClick={() => {
-  localStorage.clear();
-  navigate('/login');
-}}>
-  Logout
-</button>
+       <button
+      className="flex items-center bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
+      onClick={() => {
+        localStorage.clear();
+        navigate('/login');
+      }}
+    >
+      <FaSignOutAlt className="mr-2" />
+      Logout
+    </button>
+       
         
       <button className='lg:hidden' onClick={handleButtonClick}>
           Toggle

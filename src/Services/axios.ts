@@ -20,6 +20,7 @@ export const api = axios.create({
       return config
     },
     (error) => {
+console.log(error,"errorr");
 
       return Promise.reject(error)
     }
