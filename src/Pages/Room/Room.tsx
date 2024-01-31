@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
 
 import SideChat from '../../Components/RoomPageComponents/SideChat'
 import VideoCall from '../../Components/RoomPageComponents/VideoCall'
-import { SocketContext,SocketProvider } from '../../Context/SocketContext'
+import { SocketProvider } from '../../Context/SocketContext'
 const Room = () => {
 
 

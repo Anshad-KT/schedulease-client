@@ -1,13 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { RiAttachment2 } from "react-icons/ri";
 import { IoIosSend } from "react-icons/io";
 import Chats from './Chats'
 import ChildrenVideo from './ChildrenVideo';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { SocketContext } from '../../Context/SocketContext';
-import { updateUser } from '../../Redux/user/userSlice';
-import { selectedVideo } from '../../Redux/video/selectedVideoSlice';
 
 const SideChat = () => {
   const [state, setSstate] = useState<boolean>(false)
@@ -25,8 +22,7 @@ const SideChat = () => {
       setStreamKey(newStreamKey);
     };
      
-    
-  const dispatch = useDispatch()
+
   return (
     <>
       <div className="flex w-full h-full rounded-md overflow-y-scroll flex-col py-2 px-2 gap-2 text-gray-500 border">
@@ -41,7 +37,7 @@ const SideChat = () => {
               <ChildrenVideo onClick={()=>handleStreamKeyChange(streamKey)} key={index} userVideoSrc={streamValue} />
             );
           }
-          return null; // Return null for the selected component to exclude it
+          return null; 
         }) : <Chats /> }
         
       </div>

@@ -1,21 +1,18 @@
-import React, { useEffect, useMemo } from 'react'
-import { IoIosAddCircle } from "react-icons/io";
+import { useEffect, useMemo } from 'react'
 import { CiVideoOn } from "react-icons/ci";
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './Calender.css'
 import { FaRegClock } from "react-icons/fa";
-import { SlCalender } from "react-icons/sl";
-import { FcAbout } from "react-icons/fc";
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { addMeeting, getMeetingGuestById, updateMeeting } from '../../Services/meetings/meetingsApi';
+import { Params, useNavigate, useParams } from 'react-router-dom';
+import { getMeetingGuestById, updateMeeting } from '../../Services/meetings/meetingsApi';
 
 type ValuePiece = Date | null | any;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 const ContentComponent = () => {
-  const { id, userId } = useParams()
+  const { id, userId }:Readonly<Params<any>>= useParams()
   const [details, setDetails] = useState<any>({})
   const [date1, setDate] = useState<any>()
   useEffect(() => {
@@ -55,19 +52,8 @@ const ContentComponent = () => {
 
 
 
-
-
-
-
-  // const yourFirstDate = new Date(new Date().getFullYear(), 0, 4);
-  // const yourSecondDate = new Date(new Date().getFullYear(), 0, 8);
-
-
   const tileDisabled = useMemo(() => ({ date }: any) => {
 
-
-
-    // Ensure date1 and date1.formattedDate2 are defined before comparing
     return date1 && date1.formattedDate && date1.formattedDate2 &&
       (date < new Date(date1.formattedDate) || date > new Date(date1.formattedDate2));
   }, [date1]);
@@ -81,11 +67,10 @@ const ContentComponent = () => {
 
 
 
-  const [selectedTimes, setSelectedTimes] = useState<string>(details?.timeOptions?.[0] || '');
+  const [selectedTimes, setSelectedTimes] = useState<any>(details?.timeOptions?.[0] || '');
 
 
-  console.log(selectedTimes);
-  //title,host,dateOptions,duration,guests, isCompleted,timeOptions
+
   const submitData = async () => {
     
     const data = { dateOptions: value, timeOptions: selectedTimes, id, userId }
@@ -93,17 +78,17 @@ const ContentComponent = () => {
     navigate('/end')
   }
   const handleTimeClick = (time: string) => {
-    // Check if the time is already selected
+    
     console.log(time);
 
     if (selectedTimes === time) {
-      // If selected, remove it
-      console.log("includes");
+     
+  
 
 
     } else {
-      // If not selected, add it
-      console.log("not includes");
+     
+    
       setSelectedTimes(time);
     }
   };
@@ -208,91 +193,7 @@ const ContentComponent = () => {
 
             </div>
           </div>
-          {/* {showModal ? (
-            <>
-              <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                <div className="relative w-3/4 my-6 mx-auto max-w-3xl">
-                 
-                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                   
-                    <div className="flex flex-col items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t">
-                      <h3 className="text-3xl font-semibold">
-                        {eventName}
-                      </h3>
-                      <div className='flex justify-center items-center mr-5'>
-                        <FaRegClock />
-                        : {selectedDuration}
-                        <div className='ml-10'>
-                          ScheduleEase Meet
-                        </div>
-                      </div>
-                      <div className='mt-3'>
-                        Add times to email
-                      </div>
-                    </div>
-                    
-                    <div className="p-5 flex justify-start items-center bg-slate-300 h-3/4">
-                      <div className="flex-col justify-start items-center">
-                        <section className='mr-3'>
-                          <label htmlFor="exampleInput" className="mb-7 text-sm text-gray-600 font-medium">
-                            add guests
-                          </label>
-                        </section>
-                        <section className='flex mt-1'>
-                          <input
-                            value={newEmail}
-
-                            onChange={(e) => setNewEmail(e.target.value)}
-                            type="text"
-                            id="exampleInput"
-                            className="w-48 h-9 px-3 border border-gray-300 rounded focus:outline-none focus:border-primary"
-                            placeholder="Type here..."
-                          />
-                          <IoIosAddCircle className='ml-3' onClick={handleAddEmail} size={34} />
-                        </section>
-
-
-
-
-                      </div>
-
-                    </div>
-                    <div className="mt-4">
-                      {emails.map((email) => (
-                        <div key={email.email} className="border rounded p-2 mt-2 flex items-center bg">
-                          <span className="mr-2">{email.email}</span>
-                          <button
-                            onClick={() => handleRemoveEmail(email.email)}
-                            className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button">Remove</button>
-
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
-                      <button
-                        className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                        type="button"
-                        onClick={() => setShowModal(false)}
-                      >
-                        Close
-                      </button>
-                      <button
-                        className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                        type="button"
-                        onClick={submitData}
-                      >
-                        Save Changes
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-            </>
-          ) : null}  */}
-
+          
         </div>
       </div>
 

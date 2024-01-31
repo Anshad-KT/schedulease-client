@@ -1,5 +1,5 @@
 import { useState, useEffect, ReactNode } from "react";
-import {  useNavigate } from "react-router-dom";  // Make sure to check this import statement
+import {  useNavigate } from "react-router-dom";  
 
 import { observeAuthStateLoggedInSignup } from "../Firebase/FireBase";
 interface UserProtectedRouterProps {
@@ -62,14 +62,8 @@ interface UserProtectedRouterProps {
           setGuard(res);
         });
         navigate('/');
-      }else{
-     
-        
       }
     }, [navigate]);
-
- 
-  
     if (!user?.user?.email) {
       console.log("return children");
       return children;

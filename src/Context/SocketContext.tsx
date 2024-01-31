@@ -1,22 +1,17 @@
-import { add } from "date-fns";
-import React, { createContext, useMemo, useContext, useRef, useState, useCallback, useEffect } from "react";
+import React, { createContext, useMemo, useRef, useState, useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
+
 interface SocketProviderProps {
   children: React.ReactNode;
 }
 
-
-
-//const ENDPOINT = process.env.REACT_APP_BASE_URL as string
 const ENDPOINT = process.env.REACT_APP_BASE_URL ? "https://server.schedulease.cloud" :'http://scheduleease.com';
 
 export const SocketContext = createContext<any>(null);
 
 export const useSocket = () => {
   const socket = io(ENDPOINT)
-
-
   return socket;
 };
 
@@ -24,7 +19,6 @@ export const SocketProvider = (props: SocketProviderProps) => {
   const [newUser, setNewUser] = useState<any>([])
   const socket = useMemo(() => io(ENDPOINT), []);
   const navigate = useNavigate()
-  console.log("hissl", socket);
   const [displayChat, setDisplayChat] = useState<any>([]);
   const [streamKeys, setStreamKey] = useState<string | null>(null); // Set an initial value
   const [streams, setStreams] = useState<any>([])
@@ -35,7 +29,6 @@ export const SocketProvider = (props: SocketProviderProps) => {
   const localStream = useRef<MediaStream | null>(null);
   const remoteStream = useRef<MediaStream | null | any>({});
   const peerConnection = useRef<RTCPeerConnection | null | any>({});
-  const videoRef = useRef(null);
   const [slash, setSlash] = useState({ audio: false, video: false });
   const [callEnd, setCallEnd] = useState(false);
   const roomIds = useParams()
@@ -105,10 +98,7 @@ export const SocketProvider = (props: SocketProviderProps) => {
             [user_id]: remoteStream.current[user_id],
           }))
 
-          // if (userVideoSrc.current && remoteStream.current) {
-          //   userVideoSrc.current.srcObject = remoteStream.current;
-          // }
-          ///////////check here//////////
+          
 
 
         }
@@ -322,18 +312,6 @@ export const SocketProvider = (props: SocketProviderProps) => {
     };
   }, [createAnswer, handleUserJoined, socket, value]);
 
-  ////////////////////////////////////////////////////SELECTED STREAM LOGIC//////////////////////////////////////////
-  // useEffect(() => {
-  //     const updateVideoRef = (selectedStream: any) => {
-  //       if (selectedStream && videoRef.current) {
-  //         // Assign the video element to the ref
-  //         videoRef.current.srcObject = selectedStream; // Use srcObject to set the stream
-  //       }
-  //     };
-
-  //     // Update the video ref when selectedStream changes
-  //     updateVideoRef(remoteStream.current[selected]);
-  //   }, [remoteStream, selected, setSelected]);
   //////////////////////////////////////////////////////CAMERA LOGIC//////////////////////////////////////////
   const toggleCamera = useCallback(() => {
     const videoTrack = localStream.current?.getVideoTracks()[0];
@@ -374,7 +352,7 @@ export const SocketProvider = (props: SocketProviderProps) => {
     if (localStream.current) {
       localStream.current.getTracks().forEach((track: MediaStreamTrack) => track.stop());
       if (remoteStream.current) {
-        Object.entries(remoteStream.current).map(([streamKey, streamValue], index) => {
+        Object.entries(remoteStream.current).map(([streamKey]) => {
           if (remoteStream.current[streamKey]) {
             remoteStream.current[streamKey].getTracks().forEach((track: MediaStreamTrack) => track.stop());
           }
@@ -399,11 +377,7 @@ export const SocketProvider = (props: SocketProviderProps) => {
         setDisplayChat((prevChat:any) => [...prevChat, newMessageReceived]);
       }
     };
-  
-    // Register the event handler
     socket.on("message received", handleMessageReceived);
-  
-    // Unregister the event handler on component unmount
     return () => {
       socket.off("message received", handleMessageReceived);
     };
@@ -414,16 +388,6 @@ export const SocketProvider = (props: SocketProviderProps) => {
     if (message) {
       try {
         const msgData = { from: value, fileType: "text", content: message, createdAt: new Date() }
-        console.log(msgData)
-
-        // setMessage('')
-
-
-        // if (chatContainerRef.current) {
-        //     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        // }
-
-
         setTimeout(() => {
           socket.emit("new message", { ...msgData, id: roomId })
         }, 500)

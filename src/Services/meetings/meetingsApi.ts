@@ -33,7 +33,7 @@ export const getMeetingHostById = async (id: string) => {
   return data;
 };
 
-export const updateMeeting = async({id,userId,timeOptions,dateOptions}:{id:string,userId:string,timeOptions:string[],dateOptions:string[]}) => {
+export const updateMeeting = async({id,userId,timeOptions,dateOptions}:{id:string | undefined,userId:string | undefined,timeOptions:string,dateOptions:string}) => {
    const { data } = await api.post('/api/meeting/confirm',{id,userId,timeOptions,dateOptions})
    console.log(data)
    return data;
